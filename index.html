@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PsyNote Builder V4</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside id="sidebar" class="sidebar open">
+      <div class="sidebar__header">
+        <div>
+          <h1 class="sidebar__title">PsyNote Builder</h1>
+          <p class="sidebar__subtitle">Rédaction clinique, administratif, mails et to do list</p>
+        </div>
+        <button id="sidebarCloseBtn" class="icon-btn" type="button" aria-label="Fermer le volet latéral">✕</button>
+      </div>
+
+      <div class="sidebar__content">
+        <section class="panel-block">
+          <h2 class="panel-block__title">Architecture</h2>
+
+          <div class="field-stack">
+            <div class="dropdown-field">
+              <label class="field-label">Type principal</label>
+              <button id="mainTypeTrigger" class="select-trigger" type="button" data-menu-target="mainTypeMenu">
+                <span id="mainTypeValue">Consultation</span>
+                <span class="chevron">▾</span>
+              </button>
+              <div id="mainTypeMenu" class="menu-dropdown hidden"></div>
+            </div>
+
+            <div class="dropdown-field">
+              <label class="field-label">Sous-type</label>
+              <button id="subTypeTrigger" class="select-trigger" type="button" data-menu-target="subTypeMenu">
+                <span id="subTypeValue">Suivi</span>
+                <span class="chevron">▾</span>
+              </button>
+              <div id="subTypeMenu" class="menu-dropdown hidden"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel-block">
+          <h2 class="panel-block__title">Modes</h2>
+
+          <div class="field-stack">
+            <div class="dropdown-field">
+              <label class="field-label">Mode de rédaction</label>
+              <button id="writingModeTrigger" class="select-trigger" type="button" data-menu-target="writingModeMenu">
+                <span id="writingModeValue">Complet</span>
+                <span class="chevron">▾</span>
+              </button>
+              <div id="writingModeMenu" class="menu-dropdown hidden"></div>
+            </div>
+
+            <div class="dropdown-field">
+              <label class="field-label">Examen mental</label>
+              <button id="mseModeTrigger" class="select-trigger" type="button" data-menu-target="mseModeMenu">
+                <span id="mseModeValue">Rapide</span>
+                <span class="chevron">▾</span>
+              </button>
+              <div id="mseModeMenu" class="menu-dropdown hidden"></div>
+            </div>
+
+            <div class="dropdown-field">
+              <label class="field-label">Sortie</label>
+              <button id="outputModeTrigger" class="select-trigger" type="button" data-menu-target="outputModeMenu">
+                <span id="outputModeValue">Texte rédigé</span>
+                <span class="chevron">▾</span>
+              </button>
+              <div id="outputModeMenu" class="menu-dropdown hidden"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel-block">
+          <h2 class="panel-block__title">Identité</h2>
+
+          <div class="field-stack">
+            <div class="dropdown-field">
+              <label class="field-label">Sexe</label>
+              <button id="genderTrigger" class="select-trigger" type="button" data-menu-target="genderMenu">
+                <span id="genderValue">Femme</span>
+                <span class="chevron">▾</span>
+              </button>
+              <div id="genderMenu" class="menu-dropdown hidden"></div>
+            </div>
+
+            <div class="dropdown-field">
+              <label class="field-label">Civilité</label>
+              <button id="civilityTrigger" class="select-trigger" type="button" data-menu-target="civilityMenu">
+                <span id="civilityValue">Automatique</span>
+                <span class="chevron">▾</span>
+              </button>
+              <div id="civilityMenu" class="menu-dropdown hidden"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel-block">
+          <h2 class="panel-block__title">Modules détaillés</h2>
+          <div class="module-grid">
+            <button class="module-btn" type="button" data-modal-open="modalConsumption">Consommations</button>
+            <button class="module-btn" type="button" data-modal-open="modalPsychosocial">Psychosocial</button>
+            <button class="module-btn" type="button" data-modal-open="modalAntecedents">Antécédents</button>
+            <button class="module-btn" type="button" data-modal-open="modalRisk">Risque suicidaire</button>
+            <button class="module-btn" type="button" data-modal-open="modalMSE">Examen mental détaillé</button>
+            <button class="module-btn" type="button" data-modal-open="modalMail">Mail / réponse</button>
+            <button class="module-btn" type="button" data-modal-open="modalTodo">To do list</button>
+          </div>
+        </section>
+
+        <section class="panel-block">
+          <h2 class="panel-block__title">Actions</h2>
+          <div class="action-grid">
+            <button id="btnDemo" class="secondary-btn" type="button">Exemple</button>
+            <button id="btnSave" class="secondary-btn" type="button">Sauvegarder</button>
+            <button id="btnLoad" class="secondary-btn" type="button">Recharger</button>
+            <button id="btnClear" class="secondary-btn" type="button">Réinitialiser</button>
+          </div>
+        </section>
+
+        <section class="panel-block">
+          <h2 class="panel-block__title">Alertes</h2>
+          <div id="warnings" class="warning-box">Aucune alerte pour le moment.</div>
+        </section>
+      </div>
+    </aside>
+
+    <main class="main-layout">
+      <header class="topbar no-print">
+        <div class="topbar__left">
+          <button id="sidebarOpenBtn" class="icon-btn" type="button" aria-label="Ouvrir le volet latéral">☰</button>
+          <div>
+            <h2 class="topbar__title">Texte final</h2>
+            <p class="topbar__subtitle">Centre dédié au rendu final</p>
+          </div>
+        </div>
+
+        <div class="topbar__right">
+          <button id="btnGenerate" class="primary-btn" type="button">Générer</button>
+          <button id="btnQuestionnaire" class="secondary-btn" type="button">Questionnaire</button>
+          <button id="btnTodoOutput" class="secondary-btn" type="button">To do</button>
+          <button id="btnCopy" class="secondary-btn" type="button">Copier</button>
+          <button id="btnPrintOnly" class="secondary-btn" type="button">Imprimer</button>
+        </div>
+      </header>
+
+      <section class="metrics-strip no-print">
+        <article class="metric-card">
+          <span class="metric-card__label">Type</span>
+          <strong id="metricType" class="metric-card__value">Consultation</strong>
+        </article>
+        <article class="metric-card">
+          <span class="metric-card__label">Mode</span>
+          <strong id="metricMode" class="metric-card__value">Complet</strong>
+        </article>
+        <article class="metric-card">
+          <span class="metric-card__label">Sortie</span>
+          <strong id="metricOutput" class="metric-card__value">Texte</strong>
+        </article>
+      </section>
+
+      <section class="workspace-grid">
+        <section class="editor-panel">
+          <div class="panel-block panel-block--editor">
+            <h3 class="panel-block__title">Encodage principal</h3>
+
+            <div class="form-grid">
+              <div class="form-field">
+                <label class="field-label" for="docDate">Date</label>
+                <input id="docDate" class="text-input" type="date" />
+              </div>
+
+              <div class="form-field">
+                <label class="field-label" for="patientAge">Âge</label>
+                <input id="patientAge" class="text-input" type="number" min="0" max="120" placeholder="34" />
+              </div>
+
+              <div class="form-field form-field--full">
+                <label class="field-label" for="patientName">Nom / initiales</label>
+                <input id="patientName" class="text-input" type="text" placeholder="A.B., Dupont" />
+              </div>
+            </div>
+
+            <div class="choice-section">
+              <div>
+                <label class="field-label">Motifs fréquents</label>
+                <div id="reasonChoices" class="pill-grid"></div>
+              </div>
+
+              <div>
+                <label class="field-label">Symptômes fréquents</label>
+                <div id="symptomChoices" class="pill-grid"></div>
+              </div>
+
+              <div>
+                <label class="field-label">Plans fréquents</label>
+                <div id="planChoices" class="pill-grid"></div>
+              </div>
+
+              <div>
+                <label class="field-label">Fonctions possibles de l’alcool</label>
+                <div id="alcoholFunctionQuickChoices" class="pill-grid"></div>
+              </div>
+            </div>
+
+            <div class="form-stack">
+              <div class="form-field">
+                <label class="field-label" for="reason">Motif / demande</label>
+                <input id="reason" class="text-input" type="text" placeholder="Motif principal" />
+              </div>
+
+              <div class="form-field">
+                <label class="field-label" for="contextFree">Contexte / histoire</label>
+                <textarea id="contextFree" class="text-area" placeholder="Contexte, temporalité, éléments déclenchants, évolution..."></textarea>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label" for="treatment">Traitement</label>
+                <textarea id="treatment" class="text-area" placeholder="Une ligne par traitement"></textarea>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label" for="planFree">Plan libre / recommandations / message principal</label>
+                <textarea id="planFree" class="text-area" placeholder="Consignes, recommandations, suite..."></textarea>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="document-panel">
+          <div class="panel-block panel-block--document">
+            <textarea id="output" class="output-area" placeholder="Le texte généré apparaîtra ici."></textarea>
+          </div>
+        </section>
+
+        <section class="side-form-panel no-print">
+          <div class="panel-block">
+            <h3 class="panel-block__title">Courrier / mail</h3>
+            <div class="form-stack">
+              <div class="form-field">
+                <label class="field-label" for="recipient">Destinataire</label>
+                <input id="recipient" class="text-input" type="text" placeholder="Destinataire" />
+              </div>
+
+              <div class="form-field">
+                <label class="field-label" for="subject">Objet / sujet</label>
+                <input id="subject" class="text-input" type="text" placeholder="Objet" />
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-block">
+            <h3 class="panel-block__title">Presets intelligents</h3>
+            <div id="presetWrap" class="preset-grid"></div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL CONSUMPTION -->
+  <div id="modalConsumption" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Consommations</h3>
+        <button class="icon-btn" type="button" data-close>✕</button>
+      </div>
+
+      <div class="modal-section">
+        <h4>Alcool</h4>
+
+        <div class="choice-cluster">
+          <label class="field-label">Types d’alcool</label>
+          <div id="alcTypeChoices" class="pill-grid"></div>
+        </div>
+
+        <div class="choice-cluster">
+          <label class="field-label">Patterns</label>
+          <div id="alcPatternChoices" class="pill-grid"></div>
+        </div>
+
+        <div class="choice-cluster">
+          <label class="field-label">Fonctions possibles</label>
+          <div id="alcFunctionChoices" class="pill-grid"></div>
+        </div>
+
+        <div class="choice-cluster">
+          <label class="field-label">Signes de dépendance / gravité</label>
+          <div id="alcDependenceChoices" class="pill-grid"></div>
+        </div>
+
+        <div class="choice-cluster">
+          <label class="field-label">Antécédents / sevrage</label>
+          <div id="alcWithdrawalChoices" class="pill-grid"></div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="field-label" for="alcQty">Quantité estimée</label>
+            <input id="alcQty" class="text-input" type="text" placeholder="Ex. 8 unités/jour" />
+          </div>
+
+          <div class="form-field">
+            <label class="field-label" for="alcLast">Dernière prise</label>
+            <input id="alcLast" class="text-input" type="text" placeholder="Ex. hier soir" />
+          </div>
+
+          <div class="form-field">
+            <label class="field-label" for="alcStart">Début de consommation</label>
+            <input id="alcStart" class="text-input" type="text" placeholder="Ex. adolescence, depuis 10 ans" />
+          </div>
+
+          <div class="form-field">
+            <label class="field-label" for="alcCharacter">Caractère de consommation</label>
+            <input id="alcCharacter" class="text-input" type="text" placeholder="Ex. sociale, solitaire, mixte" />
+          </div>
+        </div>
+
+        <div class="form-field form-field--full">
+          <label class="field-label" for="alcFree">Détails alcool libres</label>
+          <textarea id="alcFree" class="text-area" placeholder="Tolérance, consommation matinale, conséquences sociales ou professionnelles, périodes d’abstinence..."></textarea>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <h4>Autres consommations</h4>
+
+        <div class="choice-cluster">
+          <label class="field-label">Substances fréquentes</label>
+          <div id="otherSubstanceChoices" class="pill-grid"></div>
+        </div>
+
+        <div class="choice-cluster">
+          <label class="field-label">Fonctions possibles</label>
+          <div id="otherSubstanceFunctionChoices" class="pill-grid"></div>
+        </div>
+
+        <div class="form-field form-field--full">
+          <textarea id="otherSubstances" class="text-area" placeholder="Une ligne par substance ou détails libres"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL PSYCHOSOCIAL -->
+  <div id="modalPsychosocial" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Psychosocial</h3>
+        <button class="icon-btn" type="button" data-close>✕</button>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Logement</label>
+        <div id="psyHousingChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Travail / activité</label>
+        <div id="psyWorkChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Réseau</label>
+        <div id="psyNetworkChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Facteurs de stress</label>
+        <div id="psyStressChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="field-label" for="psFamily">Famille</label>
+          <input id="psFamily" class="text-input" type="text" placeholder="Soutien, conflits..." />
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="psFreeShort">Contexte bref</label>
+          <input id="psFreeShort" class="text-input" type="text" placeholder="Ex. séparation récente" />
+        </div>
+      </div>
+
+      <div class="form-field form-field--full">
+        <label class="field-label" for="psFree">Psychosocial libre</label>
+        <textarea id="psFree" class="text-area" placeholder="Description libre plus détaillée"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL ANTECEDENTS -->
+  <div id="modalAntecedents" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Antécédents</h3>
+        <button class="icon-btn" type="button" data-close>✕</button>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="field-label" for="hxPsych">ATCD psychiatriques personnels</label>
+          <input id="hxPsych" class="text-input" type="text" placeholder="Ex. hospitalisations, dépression, TS" />
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="hxSomatic">ATCD somatiques pertinents</label>
+          <input id="hxSomatic" class="text-input" type="text" placeholder="Ex. épilepsie, HTA" />
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="hxAddict">ATCD addictologiques</label>
+          <input id="hxAddict" class="text-input" type="text" placeholder="Ex. alcool, cannabis, cocaïne" />
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="hxFamilyPsych">ATCD familiaux psychiatriques</label>
+          <input id="hxFamilyPsych" class="text-input" type="text" placeholder="Ex. dépression maternelle" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL RISK -->
+  <div id="modalRisk" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Risque suicidaire</h3>
+        <button class="icon-btn" type="button" data-close>✕</button>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Éléments rapides de risque</label>
+        <div id="riskQuickChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Idées</label>
+        <div id="riskIdeasChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Gravité</label>
+        <div id="riskSeverityChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Facteurs de protection</label>
+        <div id="riskProtectionChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="field-label" for="riskScenario">Scénario</label>
+          <input id="riskScenario" class="text-input" type="text" placeholder="Ex. absent, flou, précis" />
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="riskAttempts">ATCD passage à l’acte</label>
+          <input id="riskAttempts" class="text-input" type="text" placeholder="Ex. TS en 2023" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL MSE -->
+  <div id="modalMSE" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Examen mental détaillé</h3>
+        <button class="icon-btn" type="button" data-close>✕</button>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Éléments rapides d’examen mental</label>
+        <div id="mseQuickChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Contact</label>
+        <div id="mseContactChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Humeur</label>
+        <div id="mseMoodChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Anxiété</label>
+        <div id="mseAnxietyChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Pensée</label>
+        <div id="mseThoughtChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Comportement</label>
+        <div id="mseBehaviorChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Sommeil</label>
+        <div id="mseSleepChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Alimentation</label>
+        <div id="mseFoodChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="field-label" for="mseOrientation">Orientation</label>
+          <input id="mseOrientation" class="text-input" type="text" placeholder="Ex. bien orienté dans le temps et l’espace" />
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="msePresentation">Présentation</label>
+          <input id="msePresentation" class="text-input" type="text" placeholder="Ex. soignée, négligée" />
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="mseCollaboration">Collaboration</label>
+          <input id="mseCollaboration" class="text-input" type="text" placeholder="Ex. bonne, partielle" />
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="msePsychomotor">Psychomotricité</label>
+          <input id="msePsychomotor" class="text-input" type="text" placeholder="Ex. pas de ralentissement, agitation" />
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="mseSpeech">Discours</label>
+          <input id="mseSpeech" class="text-input" type="text" placeholder="Ex. cohérent, structuré" />
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="mseReality">Rapport à la réalité / délire</label>
+          <input id="mseReality" class="text-input" type="text" placeholder="Ex. pas d’élément délirant" />
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="msePerception">Perception</label>
+          <input id="msePerception" class="text-input" type="text" placeholder="Ex. pas de trouble perceptif" />
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="mseNegative">Anhédonie / aboulie / autres</label>
+          <input id="mseNegative" class="text-input" type="text" placeholder="Ex. anhédonie, aboulie" />
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="mseTrauma">Éléments traumatiques</label>
+          <input id="mseTrauma" class="text-input" type="text" placeholder="Ex. hypervigilance, reviviscences" />
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="mseInsight">Insight / jugement</label>
+          <input id="mseInsight" class="text-input" type="text" placeholder="Ex. préservé, partiel" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL MAIL -->
+  <div id="modalMail" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Mail / réponse écrite</h3>
+        <button class="icon-btn" type="button" data-close>✕</button>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Types de mail fréquents</label>
+        <div id="mailQuickChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="field-label" for="mailTo">Destinataire</label>
+          <input id="mailTo" class="text-input" type="text" placeholder="Ex. Madame X, Dr Y" />
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="mailTone">Formalisme</label>
+          <input id="mailTone" class="text-input" type="text" placeholder="Ex. bref, neutre, soutenu" />
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="mailContext">Contexte du mail</label>
+          <input id="mailContext" class="text-input" type="text" placeholder="Ex. report de rendez-vous" />
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="mailAsk">Action demandée / but</label>
+          <input id="mailAsk" class="text-input" type="text" placeholder="Ex. confirmer, transmettre" />
+        </div>
+      </div>
+
+      <div class="form-field form-field--full">
+        <label class="field-label" for="mailBody">Contenu principal du mail</label>
+        <textarea id="mailBody" class="text-area" placeholder="Message libre à intégrer"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL TODO -->
+  <div id="modalTodo" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>To do list</h3>
+        <button class="icon-btn" type="button" data-close>✕</button>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Demi-journées</label>
+        <div id="todoTimeChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Types de tâches</label>
+        <div id="todoTypeChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="choice-cluster">
+        <label class="field-label">Priorité</label>
+        <div id="todoPriorityChoices" class="pill-grid"></div>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label" for="todoSetSelect">Set intelligent</label>
+        <select id="todoSetSelect" class="text-input">
+          <option value="">—</option>
+        </select>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="field-label" for="todoEstimate">Durée estimée</label>
+          <input id="todoEstimate" class="text-input" type="text" placeholder="Ex. 20 min, 1 h" />
+        </div>
+      </div>
+
+      <div class="form-field form-field--full">
+        <label class="field-label" for="todoNotes">Tâches / notes</label>
+        <textarea id="todoNotes" class="text-area" placeholder="Une ligne par tâche ou note libre"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
